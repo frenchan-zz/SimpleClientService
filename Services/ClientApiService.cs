@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using SimpleClientService.Abstractions;
 using SimpleClientService.Models;
@@ -12,10 +13,12 @@ namespace SimpleClientService.Services
     public class ClientApiService : IClientService
     {
         private readonly IConfiguration _configuration;
+        private readonly ILoggerFactory _loggerFactory;
 
-        public ClientApiService(IConfiguration configuration)
+        public ClientApiService(IConfiguration configuration, ILoggerFactory loggerFactory)
         {
             _configuration = configuration;
+            _loggerFactory = loggerFactory;
         }
 
         public async Task<ApiResult> SimpleExecute(Uri uri, HttpMethod method, string language = null, object payload = null)
@@ -95,7 +98,8 @@ namespace SimpleClientService.Services
             }
             catch (Exception exception)
             {
-                //Logger.Service.Log(MessageLevel.Error, "There has been a problem making the request to the API. {0}", exception.Message);
+                var log = _loggerFactory.CreateLogger("Client API Service");
+                log.LogError($"There has been a problem making the request to the API.{exception.Message}");
 
                 return new ApiResult(exception);
             }
