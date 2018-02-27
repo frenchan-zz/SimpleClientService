@@ -2,6 +2,12 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp2.0</TargetFramework>
+    <Authors>Roberto Vega</Authors>
+    <Company>Rovega ltd</Company>
+    <Version>1.0.1</Version>
+    <PackageReleaseNotes>2/27/18: Payload is now type of HttpContent instead of object.</PackageReleaseNotes>
+    <RepositoryUrl>https://github.com/frenchan/SimpleClientService</RepositoryUrl>
+    <RepositoryType>GIT</RepositoryType>
   </PropertyGroup>
 
   <ItemGroup>

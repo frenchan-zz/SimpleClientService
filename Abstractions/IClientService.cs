@@ -7,8 +7,8 @@ namespace SimpleClientService.Abstractions
 {
     public interface IClientService
     {
-        Task<ApiResult> SimpleExecute(Uri uri, HttpMethod method, string language = null, object payload = null);
-        Task<ApiResult> Execute(Uri uri, HttpMethod method, string language, ServiceCredential credential = null, string apiKey = null, object payload = null);
-        Task<ApiResult> Execute(HttpClientHandler httpClientHandler, HttpRequestMessage httpRequestMessage, object payload = null);
+        Task<ApiResult> SimpleExecute(Uri uri, HttpMethod method, HttpContent payload = null, string language = null);
+        Task<ApiResult> Execute(Uri uri, HttpMethod method, HttpContent payload = null, ServiceCredential credential = null, string language = null,  string apiKey = null);
+        Task<ApiResult> Execute(HttpClientHandler httpClientHandler, HttpRequestMessage httpRequestMessage, HttpContent payload = null);
     }
 }

@@ -1,6 +1,5 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
-using Newtonsoft.Json;
 using SimpleClientService.Abstractions;
 using SimpleClientService.Models;
 using System;
@@ -21,7 +20,7 @@ namespace SimpleClientService.Services
             _loggerFactory = loggerFactory;
         }
 
-        public async Task<ApiResult> SimpleExecute(Uri uri, HttpMethod method, string language = null, object payload = null)
+        public async Task<ApiResult> SimpleExecute(Uri uri, HttpMethod method, HttpContent payload = null, string language = null)
         {
             var credentials = new ServiceCredential(
                 _configuration["ClientService:UserName"],
@@ -31,10 +30,10 @@ namespace SimpleClientService.Services
                 ? language
                 : _configuration["ClientService:Language"];
 
-            return await Execute(uri, method, language, credentials, _configuration["ClientService:ApiKey"], payload);
+            return await Execute(uri, method, payload, credentials, language, _configuration["ClientService:ApiKey"]);
         }
 
-        public async Task<ApiResult> Execute(Uri uri, HttpMethod method, string language, ServiceCredential credential = null, string apiKey = null, object payload = null)
+        public async Task<ApiResult> Execute(Uri uri, HttpMethod method, HttpContent payload = null, ServiceCredential credential = null, string language = null,  string apiKey = null)
         {
             var httpClientHandler = new HttpClientHandler
             {
@@ -77,7 +76,7 @@ namespace SimpleClientService.Services
             return await Execute(httpClientHandler, httpRequestMessage, payload);
         }
 
-        public async Task<ApiResult> Execute(HttpClientHandler httpClientHandler, HttpRequestMessage httpRequestMessage, object payload = null)
+        public async Task<ApiResult> Execute(HttpClientHandler httpClientHandler, HttpRequestMessage httpRequestMessage, HttpContent payload = null)
         {
             try
             {
@@ -85,8 +84,7 @@ namespace SimpleClientService.Services
                 {
                     if (payload != null)
                     {
-                        var requestJson = JsonConvert.SerializeObject(payload);
-                        httpRequestMessage.Content = new StringContent(requestJson, Encoding.Default, "application/json");
+                        httpRequestMessage.Content = payload;
                     }
 
                     var response = await client.SendAsync(httpRequestMessage).ConfigureAwait(false);
